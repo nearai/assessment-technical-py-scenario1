@@ -2,9 +2,13 @@
 Main application file for the Agent Discovery API
 """
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 import time
+import os
 from typing import List, Dict, Any, Optional
 
 # Import modules
@@ -18,6 +22,9 @@ app = FastAPI(
     description="API for discovering and matching agents",
     version="0.1.0",
 )
+
+# Mount static files directory
+app.mount("/static", StaticFiles(directory="agent_discovery/static"), name="static")
 
 
 class QueryRequest(BaseModel):
@@ -99,6 +106,35 @@ async def agent_by_id_route(agent_id: str):
     except Exception as e:
         print(f"Error fetching agent: {e}")
         raise HTTPException(status_code=500, detail="Failed to fetch agent")
+
+
+@app.get("/", response_class=HTMLResponse)
+async def root():
+    """
+    Serves the root page
+    """
+    with open("agent_discovery/static/index.html", "r") as file:
+        return HTMLResponse(content=file.read())
+
+
+@app.get("/query", response_class=HTMLResponse)
+async def query_page():
+    """
+    Serves the query page
+    """
+    with open("agent_discovery/static/query.html", "r") as file:
+        return HTMLResponse(content=file.read())
+
+
+@app.post("/api/recommendations")
+async def recommendations(request: QueryRequest):
+    """
+    Recommendations endpoint
+    """
+    return JSONResponse(
+        status_code=404,
+        content={"detail": "Recommendations endpoint not implemented"}
+    )
 
 
 if __name__ == "__main__":
