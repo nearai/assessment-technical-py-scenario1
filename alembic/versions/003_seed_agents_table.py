@@ -1,0 +1,255 @@
+"""Seed agents table
+
+Revision ID: 003
+Revises: 002
+Create Date: 2023-11-01
+
+"""
+from alembic import op
+import sqlalchemy as sa
+
+# revision identifiers, used by Alembic.
+revision = '003'
+down_revision = '002'
+branch_labels = None
+depends_on = None
+
+# Agent data from the JavaScript file
+agent_data = [
+    {"name": "Crisis Manager", "capabilities": "Expert in crisis management and recovery."},
+    {"name": "Stealth Specialist", "capabilities": "Specialist in stealth operations and reconnaissance."},
+    {"name": "Energy Technologist", "capabilities": "Proficient in advanced energy systems and technology."},
+    {"name": "Machinery Expert", "capabilities": "Master of heavy machinery and structural engineering."},
+    {"name": "Acoustic Navigator", "capabilities": "Skilled in acoustic analysis and sound-based navigation."},
+    {"name": "Fire Safety Expert", "capabilities": "Fire safety and emergency response expert."},
+    {"name": "Cold Climate Specialist", "capabilities": "Cold climate survival and arctic exploration specialist."},
+    {"name": "Quantum Computing Expert", "capabilities": "Quantum computing and encryption expert."},
+    {"name": "Weather Analyst", "capabilities": "Weather pattern analysis and storm tracking."},
+    {"name": "Aerospace Engineer", "capabilities": "Aerospace engineering and high-altitude operations."},
+    {"name": "Cybersecurity Specialist", "capabilities": "Codebreaking and cybersecurity specialist."},
+    {"name": "Illusion Expert", "capabilities": "Illusion and misdirection tactics expert."},
+    {"name": "Cartography Specialist", "capabilities": "Geospatial analysis and cartography specialist."},
+    {"name": "Medical Expert", "capabilities": "Medical diagnostics and emergency care."},
+    {"name": "Strategic Planner", "capabilities": "Leadership and strategic planning."},
+    {"name": "Wildfire Specialist", "capabilities": "Wildfire containment and forest management."},
+    {"name": "Rapid Responder", "capabilities": "High-speed operations and rapid response."},
+    {"name": "Satellite Specialist", "capabilities": "Satellite communications and orbital mechanics."},
+    {"name": "Optical Systems Expert", "capabilities": "Light manipulation and optical systems expert."},
+    {"name": "Metallurgy Expert", "capabilities": "Metallurgy and advanced manufacturing."},
+    {"name": "Electrical Systems Expert", "capabilities": "Electrical systems and power grid management."},
+    {"name": "Environmental Scientist", "capabilities": "Environmental science and sustainable development."},
+    {"name": "Underwater Specialist", "capabilities": "Fluid dynamics and underwater operations."},
+    {"name": "Drone Pilot", "capabilities": "Advanced drone piloting and aerial surveillance."},
+    {"name": "Solar Energy Expert", "capabilities": "Solar energy systems and renewable technologies."},
+    {"name": "Structural Repair Expert", "capabilities": "Precision welding and structural repair."},
+    {"name": "Software Debugger", "capabilities": "Software debugging and system optimization."},
+    {"name": "Vehicle Specialist", "capabilities": "Vehicle dynamics and high-speed driving."},
+    {"name": "Fire Suppression Expert", "capabilities": "Fire suppression and rescue operations."},
+    {"name": "Cold Weather Expert", "capabilities": "Extreme cold weather survival expert."},
+    {"name": "Exploration Planner", "capabilities": "Long-range planning and exploration."},
+    {"name": "Hazard Specialist", "capabilities": "Fire dynamics and hazardous material handling."},
+    {"name": "Network Specialist", "capabilities": "Network systems and data integration."},
+    {"name": "Covert Operations Expert", "capabilities": "Espionage and covert operations."},
+    {"name": "Radiation Specialist", "capabilities": "Radiation safety and nuclear technology."},
+    {"name": "Security Specialist", "capabilities": "Perimeter security and threat detection."},
+    {"name": "Disaster Relief Expert", "capabilities": "Severe weather response and disaster relief."},
+    {"name": "Motion Analyst", "capabilities": "Kinetics and motion analysis."},
+    {"name": "High-Altitude Specialist", "capabilities": "High-altitude navigation and aerospace systems."},
+    {"name": "AI Researcher", "capabilities": "Artificial intelligence and machine learning expert."},
+    {"name": "Marine Biologist", "capabilities": "Expert in marine ecosystems and underwater exploration."},
+    {"name": "Forensic Analyst", "capabilities": "Crime scene analysis and forensic investigation."},
+    {"name": "Robotics Engineer", "capabilities": "Design and development of advanced robotics."},
+    {"name": "Agricultural Scientist", "capabilities": "Sustainable farming and agricultural innovation."},
+    {"name": "Space Navigator", "capabilities": "Interstellar navigation and space exploration."},
+    {"name": "Biochemist", "capabilities": "Biochemical research and pharmaceutical development."},
+    {"name": "Archaeologist", "capabilities": "Ancient artifact recovery and historical analysis."},
+    {"name": "Linguist", "capabilities": "Language translation and linguistic analysis."},
+    {"name": "Geologist", "capabilities": "Earth sciences and mineral exploration."},
+    {"name": "Astrophysicist", "capabilities": "Astrophysics and cosmic phenomena analysis."},
+    {"name": "Ethical Hacker", "capabilities": "Cybersecurity and penetration testing."},
+    {"name": "Wildlife Conservationist", "capabilities": "Wildlife protection and habitat restoration."},
+    {"name": "Urban Planner", "capabilities": "City planning and infrastructure development."},
+    {"name": "Hydrologist", "capabilities": "Water resource management and hydrological studies."},
+    {"name": "Geneticist", "capabilities": "Genetic research and DNA analysis."},
+    {"name": "Cultural Anthropologist", "capabilities": "Cultural studies and human behavior analysis."},
+    {"name": "Logistics Coordinator", "capabilities": "Supply chain management and logistics planning."},
+    {"name": "Renewable Energy Specialist", "capabilities": "Wind and solar energy systems expert."},
+    {"name": "Seismologist", "capabilities": "Earthquake detection and seismic activity analysis."},
+    {"name": "Toxicologist", "capabilities": "Chemical safety and toxic substance analysis."},
+    {"name": "Aviation Specialist", "capabilities": "Aircraft systems and aviation operations."},
+    {"name": "Cryptographer", "capabilities": "Encryption and secure communication systems."},
+    {"name": "Park Ranger", "capabilities": "Wildlife management and park conservation."},
+    {"name": "Oceanographer", "capabilities": "Ocean currents and marine life studies."},
+    {"name": "Emergency Medic", "capabilities": "Emergency medical response and trauma care."},
+    {"name": "Data Scientist", "capabilities": "Data analysis and predictive modeling."},
+    {"name": "Ergonomics Specialist", "capabilities": "Human factors and workplace optimization."},
+    {"name": "Art Restorer", "capabilities": "Preservation and restoration of historical art."},
+    {"name": "Meteorologist", "capabilities": "Weather forecasting and climate studies."},
+    {"name": "Paleontologist", "capabilities": "Fossil analysis and prehistoric life studies."},
+    {"name": "Zoologist", "capabilities": "Animal behavior and wildlife research."},
+    {"name": "Nanotechnologist", "capabilities": "Nanotechnology and molecular engineering."},
+    {"name": "AI Ethics Specialist", "capabilities": "Ethical considerations in AI development."},
+    {"name": "Disaster Recovery Expert", "capabilities": "Post-disaster recovery and rebuilding."},
+    {"name": "Crisis Negotiator", "capabilities": "Conflict resolution and negotiation tactics."},
+    {"name": "Biomedical Engineer", "capabilities": "Medical device design and healthcare innovation."},
+    {"name": "Ecologist", "capabilities": "Ecosystem analysis and environmental protection."},
+    {"name": "Game Theorist", "capabilities": "Strategic decision-making and game theory."},
+    {"name": "Social Worker", "capabilities": "Community support and social services."},
+    {"name": "AI Trainer", "capabilities": "Training AI systems and improving algorithms."},
+    {"name": "Drone Engineer", "capabilities": "Design and development of UAV systems."},
+    {"name": "Space Architect", "capabilities": "Designing habitats for space exploration."},
+    {"name": "Behavioral Scientist", "capabilities": "Human behavior analysis and psychology."},
+    {"name": "Nuclear Physicist", "capabilities": "Nuclear energy and particle physics."},
+    {"name": "Environmental Engineer", "capabilities": "Sustainable engineering and pollution control."},
+    {"name": "Cultural Liaison", "capabilities": "Cross-cultural communication and diplomacy."},
+    {"name": "AI Policy Advisor", "capabilities": "Policy development for AI governance."},
+    {"name": "Virtual Reality Designer", "capabilities": "Immersive VR experiences and simulations."},
+    {"name": "Blockchain Specialist", "capabilities": "Distributed ledger technology and blockchain."},
+    {"name": "Ethnobotanist", "capabilities": "Study of plants and their cultural uses."},
+    {"name": "Space Weather Analyst", "capabilities": "Solar activity and space weather forecasting."},
+    {"name": "Precision Engineer", "capabilities": "High-precision manufacturing and design."},
+    {"name": "Marine Engineer", "capabilities": "Ship design and marine systems engineering."},
+    {"name": "AI Safety Researcher", "capabilities": "Ensuring safe AI deployment and usage."},
+    {"name": "Sustainability Consultant", "capabilities": "Sustainable practices and green solutions."},
+    {"name": "Quantum Physicist", "capabilities": "Quantum mechanics and advanced physics."},
+    {"name": "Robotics Programmer", "capabilities": "Programming and automation of robotic systems."},
+    {"name": "Wildlife Photographer", "capabilities": "Capturing and documenting wildlife."},
+    {"name": "Space Biologist", "capabilities": "Biological research in space environments."},
+    {"name": "AI Interaction Designer", "capabilities": "Designing human-AI interaction systems."},
+    {"name": "Geospatial Analyst", "capabilities": "Mapping and spatial data analysis."},
+    {"name": "AI Linguist", "capabilities": "Natural language processing and AI communication."},
+    {"name": "Environmental Chemist", "capabilities": "Chemical analysis of environmental samples."},
+    {"name": "AI Vision Specialist", "capabilities": "Computer vision and image recognition."},
+    {"name": "Spacecraft Engineer", "capabilities": "Design and maintenance of spacecraft."},
+    {"name": "AI Music Composer", "capabilities": "Creating music using AI systems."},
+    {"name": "AI Game Developer", "capabilities": "Developing AI for gaming applications."},
+    {"name": "AI Robotics Specialist", "capabilities": "Integrating AI into robotic systems."},
+    {"name": "AI Healthcare Advisor", "capabilities": "AI applications in healthcare and medicine."},
+    {"name": "AI Financial Analyst", "capabilities": "AI-driven financial analysis and forecasting."},
+    {"name": "AI Legal Advisor", "capabilities": "AI applications in legal research and compliance."},
+    {"name": "AI Education Specialist", "capabilities": "AI in education and learning systems."},
+    {"name": "AI Security Analyst", "capabilities": "AI for cybersecurity and threat detection."},
+    {"name": "AI Urban Planner", "capabilities": "AI for smart city planning and development."},
+    {"name": "AI Environmentalist", "capabilities": "AI for environmental monitoring and protection."},
+    {"name": "AI Transportation Expert", "capabilities": "AI for autonomous vehicles and logistics."},
+    {"name": "AI Energy Analyst", "capabilities": "AI for energy optimization and management."},
+    {"name": "AI Research Scientist", "capabilities": "AI research and development."},
+    {"name": "AI Policy Maker", "capabilities": "AI policy and regulation development."},
+    {"name": "AI Ethics Researcher", "capabilities": "Researching ethical implications of AI."},
+    {"name": "AI Data Analyst", "capabilities": "AI for data analysis and insights."},
+    {"name": "AI Marketing Specialist", "capabilities": "AI for marketing and customer engagement."},
+    {"name": "AI Product Manager", "capabilities": "Managing AI product development."},
+    {"name": "AI Operations Manager", "capabilities": "AI for operational efficiency."},
+    {"name": "AI Business Strategist", "capabilities": "AI for business strategy and growth."},
+    {"name": "AI Innovation Leader", "capabilities": "Leading AI innovation initiatives."},
+    {"name": "AI Research Engineer", "capabilities": "Engineering AI systems and solutions."},
+    {"name": "AI Systems Architect", "capabilities": "Designing AI system architectures."},
+    {"name": "AI Cloud Specialist", "capabilities": "AI in cloud computing and services."},
+    {"name": "AI Infrastructure Engineer", "capabilities": "Building AI infrastructure and platforms."},
+    {"name": "AI Algorithm Developer", "capabilities": "Developing AI algorithms and models."},
+    {"name": "AI Data Scientist", "capabilities": "AI for data science and analytics."},
+    {"name": "AI Software Engineer", "capabilities": "Developing AI software and applications."},
+    {"name": "AI Hardware Engineer", "capabilities": "Designing hardware for AI systems."},
+    {"name": "AI Developer", "capabilities": "Building AI applications and tools."},
+    {"name": "AI Consultant", "capabilities": "Advising on AI implementation and strategy."},
+    {"name": "AI Specialist", "capabilities": "Expertise in AI technologies and applications."},
+    {"name": "AI Innovator", "capabilities": "Driving AI innovation and development."},
+    {"name": "AI Visionary", "capabilities": "Shaping the future of AI."},
+    {"name": "AI Pioneer", "capabilities": "Leading advancements in AI."},
+    {"name": "AI Advocate", "capabilities": "Promoting AI adoption and awareness."},
+    {"name": "AI Enthusiast", "capabilities": "Passionate about AI and its potential."},
+    {"name": "AI Explorer", "capabilities": "Exploring new frontiers in AI."},
+    {"name": "AI Creator", "capabilities": "Creating AI solutions and applications."},
+    {"name": "Cybernetic Engineer", "capabilities": "Expert in cybernetic systems and human augmentation."},
+    {"name": "Deep Sea Diver", "capabilities": "Specialist in deep-sea exploration and underwater habitats."},
+    {"name": "Astronomer", "capabilities": "Expert in celestial observation and space phenomena."},
+    {"name": "Volcanologist", "capabilities": "Specialist in volcanic activity and eruption prediction."},
+    {"name": "Arctic Explorer", "capabilities": "Skilled in polar expeditions and extreme cold survival."},
+    {"name": "Desert Navigator", "capabilities": "Expert in desert survival and navigation."},
+    {"name": "Storm Chaser", "capabilities": "Specialist in severe weather tracking and analysis."},
+    {"name": "Eco Warrior", "capabilities": "Advocate for environmental conservation and sustainability."},
+    {"name": "Urban Designer", "capabilities": "Expert in city planning and urban aesthetics."},
+    {"name": "Wildlife Biologist", "capabilities": "Specialist in animal behavior and ecosystem dynamics."},
+    {"name": "Renewable Energy Engineer", "capabilities": "Expert in wind, solar, and hydro energy systems."},
+    {"name": "Seafloor Mapper", "capabilities": "Specialist in ocean floor mapping and marine geology."},
+    {"name": "Crisis Responder", "capabilities": "Expert in emergency response and disaster management."},
+    {"name": "Conflict Mediator", "capabilities": "Skilled in negotiation and conflict resolution."},
+    {"name": "Space Miner", "capabilities": "Specialist in asteroid mining and resource extraction."},
+    {"name": "Rocket Scientist", "capabilities": "Expert in rocket propulsion and spacecraft design."},
+    {"name": "Hydraulic Engineer", "capabilities": "Specialist in water systems and fluid mechanics."},
+    {"name": "Forest Ranger", "capabilities": "Expert in forest management and wildlife protection."},
+    {"name": "Cultural Historian", "capabilities": "Specialist in historical preservation and cultural studies."},
+    {"name": "Lunar Geologist", "capabilities": "Expert in moon surface analysis and exploration."},
+    {"name": "Solar Technician", "capabilities": "Specialist in solar panel installation and maintenance."},
+    {"name": "Wind Turbine Engineer", "capabilities": "Expert in wind energy systems and turbine design."},
+    {"name": "Meteor Impact Analyst", "capabilities": "Specialist in meteorite tracking and impact studies."},
+    {"name": "Submarine Pilot", "capabilities": "Expert in underwater vehicle navigation and operation."},
+    {"name": "Energy Auditor", "capabilities": "Specialist in energy efficiency and consumption analysis."},
+    {"name": "Sustainability Advocate", "capabilities": "Promoter of sustainable practices and green technologies."},
+    {"name": "Geothermal Engineer", "capabilities": "Expert in geothermal energy systems and applications."},
+    {"name": "Aviation Mechanic", "capabilities": "Specialist in aircraft maintenance and repair."},
+    {"name": "Space Habitat Designer", "capabilities": "Expert in designing living spaces for space missions."},
+    {"name": "Marine Conservationist", "capabilities": "Specialist in protecting marine ecosystems and species."},
+    {"name": "Climatologist", "capabilities": "Expert in climate patterns and global warming studies."},
+    {"name": "Fossil Hunter", "capabilities": "Specialist in paleontological excavation and analysis."},
+    {"name": "Cave Explorer", "capabilities": "Expert in spelunking and underground mapping."},
+    {"name": "Botanist", "capabilities": "Specialist in plant biology and ecosystem restoration."},
+    {"name": "Chemical Engineer", "capabilities": "Expert in chemical processes and industrial applications."},
+    {"name": "Structural Engineer", "capabilities": "Specialist in building design and structural integrity."},
+    {"name": "Fire Investigator", "capabilities": "Expert in fire origin and cause analysis."},
+    {"name": "Search and Rescue Specialist", "capabilities": "Skilled in locating and rescuing individuals in emergencies."},
+    {"name": "Paramedic", "capabilities": "Expert in emergency medical care and trauma response."},
+    {"name": "Ethical Researcher", "capabilities": "Specialist in ethical practices in scientific research."},
+    {"name": "Space Weather Forecaster", "capabilities": "Expert in predicting solar storms and space weather."},
+    {"name": "Mineralogist", "capabilities": "Specialist in mineral identification and extraction."},
+    {"name": "Aerospace Technician", "capabilities": "Expert in spacecraft assembly and testing."},
+    {"name": "Robotics Mechanic", "capabilities": "Specialist in maintaining and repairing robotic systems."},
+    {"name": "Underwater Archaeologist", "capabilities": "Expert in recovering artifacts from underwater sites."},
+    {"name": "Park Ecologist", "capabilities": "Specialist in managing and studying protected natural areas."},
+    {"name": "Energy Storage Engineer", "capabilities": "Expert in battery technology and energy storage systems."},
+    {"name": "Precision Agriculture Specialist", "capabilities": "Skilled in advanced farming techniques and technology."},
+    {"name": "Spacecraft Pilot", "capabilities": "Expert in piloting and operating spacecraft."},
+    {"name": "Ocean Current Analyst", "capabilities": "Specialist in studying and predicting ocean currents."},
+    {"name": "Wildfire Analyst", "capabilities": "Expert in wildfire behavior and prevention strategies."},
+    {"name": "Renewable Materials Scientist", "capabilities": "Specialist in developing sustainable materials."},
+    {"name": "Satellite Engineer", "capabilities": "Expert in satellite design and deployment."},
+    {"name": "Environmental Policy Advisor", "capabilities": "Specialist in creating policies for environmental protection."},
+    {"name": "Bioinformatics Specialist", "capabilities": "Expert in analyzing biological data using computational tools."},
+    {"name": "Space Telescope Operator", "capabilities": "Specialist in operating and maintaining space telescopes."},
+    {"name": "Habitat Restoration Expert", "capabilities": "Skilled in restoring damaged ecosystems."}
+]
+
+def upgrade() -> None:
+    # Insert agent data
+    for i, agent in enumerate(agent_data):
+        # Generate deterministic UUIDs similar to the JavaScript version
+        id_value = f"{(i + 1):08d}-0000-0000-0000-{(i + 1):012d}"
+
+        # Random performance between 0.5 and 1.0
+        import random
+        historical_performance = round(random.uniform(0.5, 1.0), 2)
+
+        # Alternate availability
+        availability = i % 2 == 0
+
+        # Image URL
+        image_url = f"https://example.com/agent-{i + 1}.jpg"
+
+        # Insert the agent
+        op.execute(f"""
+            INSERT INTO agents (id, name, capabilities, historical_performance, availability, image_url)
+            VALUES (
+                '{id_value}',
+                '{agent["name"]}',
+                '{agent["capabilities"]}',
+                {historical_performance},
+                {availability},
+                '{image_url}'
+            )
+        """)
+
+def downgrade() -> None:
+    # Delete the seeded agents
+    for i in range(len(agent_data)):
+        id_value = f"{(i + 1):08d}-0000-0000-0000-{(i + 1):012d}"
+        op.execute(f"DELETE FROM agents WHERE id = '{id_value}'")

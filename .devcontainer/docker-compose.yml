@@ -13,6 +13,10 @@ services:
       - PYTHONUNBUFFERED=1
     network_mode: host
 
+    # To run directly on MacOS, comment out the network_mode: host line above and uncomment the ports line below
+#    ports:
+#      - "8000:8000"
+
   db:
     image: postgres:16
     restart: unless-stopped
@@ -24,6 +28,10 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_DB: agent_discovery
     network_mode: host
+
+    # To run directly on MacOS, comment out the network_mode: host line above and uncomment the ports line below
+#    ports:
+#      - "5432:5432"
 
 volumes:
   postgres-data:
