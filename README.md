@@ -2,6 +2,7 @@
 1. Fork this repository into a new PRIVATE repository in your own GitHub account.
 2. A postgres DB is recommended
 3. Run the app
+ * Stop when the database migrations have successfully run and you can view the / html page.
 
 ## assessment-technical-py-scenario1
 Template repo for technical assessments in Python, scenario 1.
@@ -11,7 +12,8 @@ Template repo for technical assessments in Python, scenario 1.
  * Option 1. This project has a devcontainer configuration
  * Option 2. Or the .devcontainer/docker-compose.yml can be run directly
  * Option 3. Open in codespaces https://codespaces.new/nearai/assessment-technical-py-scenario1
- * Option 4. Run it step by step as detailed below
+ * Option 4. Run it step by step as detailed below.
+     * Feel free to reach out if you run into any problems.
 
 ### Running step by step
 

@@ -16,7 +16,7 @@ else
     echo "No .env file found in /workspace or ../"
     exit 1
 fi
-psql -v ON_ERROR_STOP=1 -h "$DB_HOST" -p "$DB_PORT" --username "$DB_USER" --dbname "$DB_PASSWORD" <<-EOSQL
+psql -v ON_ERROR_STOP=1 -h "$DB_HOST" -p "$DB_PORT" --username "$DB_USER" <<-EOSQL
     CREATE DATABASE $DB_NAME;
 
     -- Grant privileges
