@@ -10,8 +10,12 @@ Template repo for technical assessments in Python, scenario 1.
 
  * Option 1. This project has a devcontainer configuration
  * Option 2. Or the .devcontainer/docker-compose.yml can be run directly
- * Option 3. No Gitpod configuration yet...
- * Option 4. Run it manually as detailed below
+ * Option 3. Open in codespaces https://codespaces.new/nearai/assessment-technical-py-scenario1
+ * Option 4. Run it step by step as detailed below
+
+### Running step by step
+
+1. You will need to run Postgres locally or with .devcontainer/docker-compose.yml
 
 1. Set up a virtual environment and Install dependencies:
 
@@ -30,13 +34,18 @@ DB_PASSWORD=postgres
 DB_PORT=5432
 ```
 
+## DB helper scripts
+The scripts `.devcontainer/init-db.sh` and `.devcontainer/run-migrations.sh` 
+
 ## Database Migrations
 
 This project uses Alembic for database migrations. To run the migrations:
 
 1. Make sure your database is running and the environment variables are set correctly in your `.env` file.
 
-2. Run the migrations:
+2. Make sure you have an `agent_discovery` database created in your Postgres instance.
+
+3. Run the migrations:
 
 ```bash
 alembic upgrade head
